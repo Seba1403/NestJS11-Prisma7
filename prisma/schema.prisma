@@ -1,0 +1,59 @@
+// ============================================================
+// PLANTILLA: schema.prisma
+// ============================================================
+// Aquí defines los modelos de tu base de datos.
+// Cada model se convierte en una tabla en PostgreSQL
+// y genera automáticamente los tipos de TypeScript.
+//
+// Flujo de trabajo:
+//   1. Edita este archivo con tus modelos
+//   2. Corre: npx prisma migrate dev --name nombre_migracion
+//   3. El cliente se regenera solo en src/generated/prisma/
+// ============================================================
+
+generator client {
+  provider = "prisma-client"
+  // No cambiar el output, los servicios importan desde esta ruta
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  // La URL se lee desde el .env, no hardcodear aquí
+}
+
+// ============================================================
+// MODELOS DE EJEMPLO
+// Relación: un usuario tiene muchas comidas favoritas (1:N)
+// Puedes reemplazarlos o agregar los tuyos debajo.
+// ============================================================
+
+// Modelo padre (1)
+model usuario {
+  id              Int               @id @default(autoincrement())
+  nombre          String            @db.VarChar(100)
+  // Relación inversa: Prisma la necesita para el JOIN
+  comida_favorita comida_favorita[]
+}
+
+// Modelo hijo (N) — depende de usuario
+model comida_favorita {
+  id            Int     @id @default(autoincrement())
+  nombre_comida String  @db.VarChar(100)
+  usuario_id    Int
+  // onDelete: Cascade → si se borra el usuario, se borran sus comidas
+  usuario       usuario @relation(fields: [usuario_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_usuario")
+}
+
+// ============================================================
+// EJEMPLO: así se vería un modelo tuyo
+//
+// model Producto {
+//   id          Int      @id @default(autoincrement())
+//   nombre      String   @db.VarChar(150)
+//   precio      Float
+//   creado_en   DateTime @default(now())
+//   categoria   Categoria @relation(fields: [categoria_id], references: [id])
+//   categoria_id Int
+// }
+// ============================================================
