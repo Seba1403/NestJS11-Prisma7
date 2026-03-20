@@ -36,6 +36,7 @@ Incluye dos modelos de ejemplo (`usuario` y `comida_favorita`) con relación uno
 git clone <repo-url> nombre-de-tu-proyecto
 cd nombre-de-tu-proyecto
 npm install
+npm i @nestjs/config
 ```
 
 ### 2. Configurar variables de entorno
